@@ -22,29 +22,49 @@ import "../style/index.css";
         city: null
     }
  */
-function render(variables = {}) {
-  console.log("These are the current variables: ", variables); // print on the console
-  // here we ask the logical questions to make decisions on how to build the html
-  // if includeCover==false then we reset the cover code without the <img> tag to make the cover transparent.
-  let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
-  if (variables.includeCover == false) cover = "<div class='cover'></div>";
-
-  // reset the website body with the new html output
-  document.querySelector("#widget_content").innerHTML = `<div class="widget">
-            ${cover}
+    function render(variables = {}) {
+      console.log("These are the current variables: ", variables);
+    
+      // Handle cover image display logic
+      let cover = variables.includeCover
+        ? `<div class="cover"><img src="${variables.background}" /></div>`
+        : "<div class='cover'></div>";
+    
+      // Define social media links only if they exist
+      let socialLinks = "";
+      if (variables.twitter) {
+        socialLinks += `<li><a href="https://twitter.com/${variables.twitter}" target="_blank"><i class="fab fa-twitter"></i></a></li>`;
+      }
+      if (variables.github) {
+        socialLinks += `<li><a href="https://github.com/${variables.github}" target="_blank"><i class="fab fa-github"></i></a></li>`;
+      }
+      if (variables.linkedin) {
+        socialLinks += `<li><a href="https://linkedin.com/in/${variables.linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a></li>`;
+      }
+      if (variables.instagram) {
+        socialLinks += `<li><a href="https://instagram.com/${variables.instagram}" target="_blank"><i class="fab fa-instagram"></i></a></li>`;
+      }
+    
+      // Set user details, using fallbacks if values are null
+      let fullName = `${variables.name || ""} ${variables.lastName || ""}`.trim() || "Your Name";
+      let role = variables.role || "Your Role";
+      let location = `${variables.city || "City"}, ${variables.country || "Country"}`;
+    
+      // Generate the final widget HTML
+      document.querySelector("#widget_content").innerHTML = `
+        <div class="widget">
+          ${cover}
           <img src="${variables.avatarURL}" class="photo" />
-          <h1>Lucy Boilett</h1>
-          <h2>Web Developer</h2>
-          <h3>Miami, USA</h3>
-          <ul class="position-right">
-            <li><a href="https://twitter.com/4geeksacademy"><i class="fab fa-twitter"></i></a></li>
-            <li><a href="https://github.com/4geeksacademy"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://linkedin.com/school/4geeksacademy"><i class="fab fa-linkedin"></i></a></li>
-            <li><a href="https://instagram.com/4geeksacademy"><i class="fab fa-instagram"></i></a></li>
+          <h1>${fullName}</h1>
+          <h2>${role}</h2>
+          <h3>${location}</h3>
+          <ul class="${variables.socialMediaPosition || "position-right"}">
+            ${socialLinks}
           </ul>
         </div>
-    `;
-}
+      `;
+    }
+    
 
 /**
  * Don't change any of the lines below, here is where we do the logic for the dropdowns
